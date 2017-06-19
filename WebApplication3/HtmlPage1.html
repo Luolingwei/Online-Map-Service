@@ -253,19 +253,9 @@
                 source: source
             });
 
-            //缩略地图
-            var overview = new ol.Map({
-                target: 'overview',
-                //layers: [layer],
-                view: new ol.View({
-                    projection: 'EPSG:4326',
-                    center: [121.01371765136719, 29.139690399169922],
-                    zoom: 11,
-                    maxZoom: 11,
-                    minZoom: 11
-                })
-            });
 
+
+            
             /*地图的设置*/
 
             //设置地图投影
@@ -284,10 +274,8 @@
                 }).extend([
                     new ol.control.ScaleLine()
                 ]),
-
                 //设置显示的容器
                 target: 'map',
-
                 //设置图层
                 layers: [
                     //添加图层
@@ -295,7 +283,6 @@
                    ImageMap,
                    vector,
                 ],
-
                 //设置视图
                 view: new ol.View({
                     //设置投影
@@ -306,6 +293,21 @@
 
             //地图显示
             map.getView().fit(bounds, map.getSize());
+
+            //缩略地图
+            var overview = new ol.Map({
+                target: 'overview',
+                layers: [BaseMap],
+                view: new ol.View({
+                    projection: 'EPSG:4326',
+                    center: map.getView().getCenter(),
+                    zoom: map.getView().getZoom()-2,
+                    //maxZoom: 11,
+                    //minZoom: 11
+                })
+            });
+
+
             function btn1_click() {
                 var cityname = document.getElementById("txt").value;
                 $.ajax({
@@ -316,6 +318,52 @@
                     }
                 })
             }
+
+            var extent = map.getView().calculateExtent(map.getSize());
+            var coor = [[[extent[0], extent[1]], [extent[2], extent[1]], [extent[2], extent[3]], [extent[0], extent[3]], [extent[0], extent[1]]]];
+            var polygonFeature = new ol.Feature(new ol.geom.Polygon(coor));
+
+            var vectorSource = new ol.source.Vector({
+                features: [polygonFeature]
+            });
+
+            var vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({ color: 'rgba(160,160,160,0.2)' }),
+                    stroke: new ol.style.Stroke({
+                        color: 'white', width: 2
+                    })
+                })
+            });
+            overview.addLayer(vectorLayer);
+
+            map.on('moveend', function () {
+                var extent = map.getView().calculateExtent(map.getSize());
+                var coor = [[[extent[0], extent[1]], [extent[2], extent[1]], [extent[2], extent[3]], [extent[0], extent[3]], [extent[0], extent[1]]]];
+                vectorLayer.getSource().getFeatures()[0].getGeometry().setCoordinates(coor);
+                setTimeout(function () {
+                    var view = overview.getView();
+                    var pan = ol.animation.pan({
+                        duration: 250,
+                        source: (view.getCenter())
+                    });
+                    overview.beforeRender(pan);
+                    overview.getView().setZoom(map.getView().getZoom()-2);
+                    overview.getView().setCenter(map.getView().getCenter());
+                }, 300);
+            })
+
+            overview.on('pointermove', function (evt) {
+                overview.getTargetElement().style.cursor = 'pointer';
+            });
+
+            overview.on('click', function (e) {
+                var coor = e.coordinate;
+                map.getView().setCenter(coor);
+            })
+
+
 
             /*地图的操作*/
 
