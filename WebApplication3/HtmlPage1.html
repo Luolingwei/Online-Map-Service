@@ -320,7 +320,6 @@
             }
 
 
-
             var extent = map.getView().calculateExtent(map.getSize());
             var coor = [[[extent[0], extent[1]], [extent[2], extent[1]], [extent[2], extent[3]], [extent[0], extent[3]], [extent[0], extent[1]]]];
             var polygonFeature = new ol.Feature(new ol.geom.Polygon(coor));
@@ -429,6 +428,8 @@
             var huizhiSelect = document.getElementById('huizhi');
             var features = new ol.Collection();
 
+            var measurePtsArray = new ol.Collection();
+
             var draw; // global so we can remove it later
             function addInteraction() {
                 var value = huizhiSelect.value;
@@ -438,11 +439,7 @@
                         source: source,
                         type: /** @type {ol.geom.GeometryType} */ (huizhiSelect.value)
                     });
-
-                    //draw.on('drawend',function(e){
-                    //    alert("hhh");
-                    //});
-
+           
                     map.addInteraction(draw);
                 }
             }
@@ -506,7 +503,7 @@
 
             //量测
             var measureFeature;
-            var draw = new ol.interaction.Draw({
+            var drawM = new ol.interaction.Draw({
                 //在一个暂时的图层进行量算操作
                 features: measureFeature,
                 source: vector.getSource(),
@@ -514,7 +511,7 @@
             })
 
             //选择完两个点之后,进行距离的计算
-            draw.on('drawend', function (e) {
+            drawM.on('drawend', function (e) {
                 var currentFeature = e.feature;
                 measureFeature.push(currentFeature);
                 if (measureFeature.getLength() == 2) {
@@ -527,10 +524,10 @@
 
             //点击距离量算按钮后,添加距离量算的交互,删除其他的交互
             function measureBtn() {
-                clearInteractions();
-                document.getElementById("messageControl").style.display = "none";
+                //clearInteractions();
+                //document.getElementById("messageControl").style.display = "none";
                 measureFeature = new ol.Collection();
-                map.addInteraction(draw);
+                map.addInteraction(drawM);
             }
 
 
