@@ -372,7 +372,9 @@
             var map = new ol.Map({
                 //地图中的比例尺等控制要素
                 controls: ol.control.defaults({
-                    attribution: false
+                    attribution: false,
+                    rotate: false,
+                    zoom: false
                 }).extend([
                     new ol.control.ScaleLine()
                 ]),
@@ -411,14 +413,22 @@
 
             //定义缩略地图
             var overview = new ol.Map({
+                controls: ol.control.defaults({
+                    attribution: false,
+                    rotate: false,
+                    zoom: false
+                }).extend([
+                    new ol.control.ScaleLine()
+                ]),
                 target: 'overview',
                 layers: [BaseMap],
                 view: new ol.View({
-                    projection: 'EPSG:4326',
-                    center: map.getView().getCenter(),
-                    zoom: map.getView().getZoom() - 2,
-                    //maxZoom: 11,
-                    //minZoom: 11
+                projection: 'EPSG:4326',
+                center: map.getView().getCenter(),
+                zoom: map.getView().getZoom() - 2,
+                //maxZoom: 11,
+                //minZoom: 11
+              
                 })
             });
 
@@ -625,12 +635,17 @@
                 }
             })
 
+            var judgeMeasure = false;
             //点击距离量算按钮后,添加距离量算的交互,删除其他的交互
             function measureBtn() {
-                //clearInteractions();
-                //document.getElementById("messageControl").style.display = "none";
-                measureFeature = new ol.Collection();
-                map.addInteraction(drawM);
+                if (!judgeMeasure) {
+                    measureFeature = new ol.Collection();
+                    map.addInteraction(drawM);
+                }
+                else {
+                    map.removeInteraction(drawM);
+                }
+                judgeMeasure = !judgeMeasure;
             }
 
             //导出地图
