@@ -167,10 +167,107 @@
         right: 20px;
         z-index: 100;
     }
+
+    /** {
+        margin: 0;
+        padding: 0;
+    }*/
+
+    /*html {
+        height: 100%;
+    }*/
+
+    p {
+        padding: 10px 0;
+    }
+
+    body {
+        min-height: 100%;
+        font-family: arial;
+        /*position: relative;*/
+    }
+
+    body.sideMenu {
+        margin: 0;
+        -webkit-transform: none;
+        transform: none;
+    }
+
+    #sideToggle {
+        display: none;
+    }
+
+    #sideToggle:checked + aside {
+        left: 0;
+    }
+
+    #sideToggle:checked ~ #wrap {
+        padding-left: 220px;
+    }
+
+    body > aside {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -200px;
+        width: 200px;
+        background: #DEDEDE;
+        transition: 0.2s ease-out;
+        -webkit-transition: 0.2s ease-out;
+        z-index: 100;
+    }
+
+    body > aside > h2 {
+        color: #303030;
+        text-align: center;
+        font-weight: normal;
+        padding: 10px;
+    }
+
+    #wrap {
+        margin-left: 20px;
+        padding: 10px;
+        transition: 0.25s ease-out;
+        -webkit-transition: 0.25s ease-out;
+        position: absolute;
+        z-index: 100;
+    }
+
+    #wrap > label {
+        display: inline-block;
+    }
+
+    #wrap > label {
+        background: #f1103a;
+        border-radius: 50px;
+        color: #FFE4B5;
+        cursor: pointer;
+        display: block;
+        font-family: Courier New;
+        font-size: 25px;
+        font-weight: bold;
+        width: 30px;
+        height: 30px;
+        line-height: 35px;
+        text-align: center;
+        text-shadow: 0 -4px;
+        position: absolute;
+        z-index: 100;
+    }
+
+    #wrap > label:hover {
+        background: #000;
+    }
 </style>
 
 
 <body>
+
+    <input type='checkbox' id='sideToggle' />
+    <aside><h2>操作</h2></aside>
+    <div id='wrap'>
+        <label id='sideMenuControl' for='sideToggle'>=</label>
+    </div>
 
     <button id="btn1" onclick="btn1_click()">查询</button>
     <button id="btn2" onclick="moveToTop()">上移</button>
@@ -222,7 +319,7 @@
 
             /*设置各个图层*/
 
-            //数据地图
+            //居民地地图
             var ImageMap = new ol.layer.Image({
                 source: new ol.source.ImageWMS({
                     ratio: 1,
@@ -239,6 +336,13 @@
                 })
             });
 
+            //居民地数据
+            var ImageData = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    format: new ol.format.GeoJSON(),
+                    url: 'http://localhost:8080/geoserver/postgis_llw/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=postgis_llw:res2_4m&maxFeatures=50&outputFormat=application%2Fjson',
+                })
+            });
 
             //底图
             var BaseMap = new ol.layer.Tile({
@@ -254,8 +358,6 @@
             });
 
 
-
-            
             /*地图的设置*/
 
             //设置地图投影
@@ -290,23 +392,8 @@
                 })
             });
 
-
             //地图显示
             map.getView().fit(bounds, map.getSize());
-
-            //缩略地图
-            var overview = new ol.Map({
-                target: 'overview',
-                layers: [BaseMap],
-                view: new ol.View({
-                    projection: 'EPSG:4326',
-                    center: map.getView().getCenter(),
-                    zoom: map.getView().getZoom()-2,
-                    //maxZoom: 11,
-                    //minZoom: 11
-                })
-            });
-
 
             function btn1_click() {
                 var cityname = document.getElementById("txt").value;
@@ -320,6 +407,22 @@
             }
 
 
+            /*设置缩略地图*/
+
+            //定义缩略地图
+            var overview = new ol.Map({
+                target: 'overview',
+                layers: [BaseMap],
+                view: new ol.View({
+                    projection: 'EPSG:4326',
+                    center: map.getView().getCenter(),
+                    zoom: map.getView().getZoom() - 2,
+                    //maxZoom: 11,
+                    //minZoom: 11
+                })
+            });
+
+            //在缩略图中添加map的extent框
             var extent = map.getView().calculateExtent(map.getSize());
             var coor = [[[extent[0], extent[1]], [extent[2], extent[1]], [extent[2], extent[3]], [extent[0], extent[3]], [extent[0], extent[1]]]];
             var polygonFeature = new ol.Feature(new ol.geom.Polygon(coor));
@@ -339,6 +442,7 @@
             });
             overview.addLayer(vectorLayer);
 
+            //设置map和overview互相联动
             map.on('moveend', function () {
                 var extent = map.getView().calculateExtent(map.getSize());
                 var coor = [[[extent[0], extent[1]], [extent[2], extent[1]], [extent[2], extent[3]], [extent[0], extent[3]], [extent[0], extent[1]]]];
@@ -350,7 +454,7 @@
                         source: (view.getCenter())
                     });
                     overview.beforeRender(pan);
-                    overview.getView().setZoom(map.getView().getZoom()-2);
+                    overview.getView().setZoom(map.getView().getZoom() - 2);
                     overview.getView().setCenter(map.getView().getCenter());
                 }, 300);
             })
@@ -363,7 +467,6 @@
                 var coor = e.coordinate;
                 map.getView().setCenter(coor);
             })
-
 
 
             /*地图的操作*/
@@ -439,7 +542,7 @@
                         source: source,
                         type: /** @type {ol.geom.GeometryType} */ (huizhiSelect.value)
                     });
-           
+
                     map.addInteraction(draw);
                 }
             }
@@ -530,7 +633,16 @@
                 map.addInteraction(drawM);
             }
 
-
+            //导出地图
+            $("#exportMap").click(function () {
+                map.once('postcompose', function (event) {
+                    var canvas = event.context.canvas;
+                    canvas.toBlob(function (blob) {
+                        saveAs(blob, 'map.png');
+                    });
+                });
+                map.renderSync();
+            });
 
 
         </script>
