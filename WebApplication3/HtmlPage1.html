@@ -315,8 +315,9 @@
 
     <div id="map" src="">
 
-
+   
         <script>
+        
             var format = 'image/png';
             var bounds = [73.2516098022461, 15.5910949707031, 135.080017089844, 53.7497673034668];//范围
             
@@ -344,7 +345,7 @@
             var ImageData = new ol.layer.Vector({
                 source: new ol.source.Vector({
                     format: new ol.format.GeoJSON(),
-                    url: 'http://localhost:8080/geoserver/postgis_llw/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=postgis_llw:res2_4m&maxFeatures=50&outputFormat=application%2Fjson',
+                    url: 'http://localhost:8080/geoserver/postgis_llw/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=postgis_llw:res2_4m&maxFeatures=500&outputFormat=json',
                 })
             });
 
@@ -390,6 +391,7 @@
                    BaseMap,
                    ImageMap,
                    vector,
+                   ImageData,
                 ],
                 //设置视图
                 view: new ol.View({
@@ -666,12 +668,6 @@
 
         </script>
     </div>
-
-
-
-
-
-
 
 </body>
 
