@@ -156,6 +156,12 @@
         top: 50px;
     }
 
+    #tucengkongzhi {
+        position: absolute;
+        right: 300px;
+        top: 50px;
+    }
+
     #overview {
         background-color: #fff;
         width: 290px;
@@ -303,9 +309,18 @@
         <option value="None">None</option>
         <option value="singleclick">Single-click</option>
         <option value="pointermove">Hover</option>
-
     </select>
    
+    <div style="right: 400px; position:absolute; top: 48px;">图层控制</div>
+    <select id="tucengkongzhi">
+        <option value="All">全部图层</option>
+        <option value="Base">底图</option>
+        <option value="ImageMap">居民地地图</option>
+        <option value="ImageData">居民地数据</option>      
+        <option value="Remove">移除数据</option>  
+    </select>
+
+
     <div style="right: 1050px; position:fixed; bottom:0px; font-size:14px;">Copyright © 2017 LUO Lingwei. All rights reserved.</div>
     
     <div style="left: 70px; position:absolute; top: 50px;">城市名</div>
@@ -389,13 +404,15 @@
                 layers: [
                     //添加图层
                    BaseMap,
-                   ImageMap,
+                   //ImageMap,
                    vector,
                    ImageData,
                 ],
                 //设置视图
                 view: new ol.View({
                     //设置投影
+                    loadTilesWhileAnimating: true,
+
                     projection: projection
                 })
             });
@@ -594,6 +611,43 @@
 
             addInteractionMod();
 
+            //图层控制
+            var tucengkongzhiSelect = document.getElementById('tucengkongzhi');
+            tucengkongzhiSelect.onchange = function () {
+                var value = tucengkongzhiSelect.value;
+                if (value == 'All') {
+                    removeAllLayers();
+                    map.addLayer(BaseMap);
+                    map.addLayer(ImageMap);
+                    map.addLayer(ImageData);
+                    map.getView().fit(bounds, map.getSize());
+                }
+                else if (value=='BaseMap'){
+                    removeAllLayers();
+                    map.addLayer(BaseMap);
+                    map.getView().fit(bounds, map.getSize());
+                }
+                else if (value == 'ImageMap') {
+                    removeAllLayers();
+                    map.addLayer(ImageMap);
+                    map.getView().fit(bounds, map.getSize());
+                }
+                else if (value == 'ImageData') {
+                    removeAllLayers();
+                    map.addLayer(ImageData);
+                    map.getView().fit(bounds, map.getSize());
+                }
+                else if (value == 'Remove') {
+                    removeAllLayers();
+                }
+            }
+
+            function removeAllLayers() {                                            
+                for (var i = 0; i < map.getLayers().getLength() ; i++) {
+                    map.removeLayer(map.getLayers()[i]);                  
+                }              
+            }
+
             //点选
             var dianxuanSelect = document.getElementById('dianxuan');
             var select = null;
@@ -606,6 +660,18 @@
                         var features = e.target.getFeatures();
                         var feature = features.pop();
                         alert(feature.getId());
+                        alert(feature.getGeometry());
+                        var geo = feature.getGeometry();
+                        var coor = geo.getCoordinates();
+                        var latitude = coor[0];
+                        var lontitude = coor[1];
+                        var location = ol.proj.fromLonLat(coor);
+                        var viewx = map.getView();
+                        viewx.animate({
+                            center: location,
+                            duration: 2000
+                        });
+
                     });
                     map.addInteraction(select);
                 }
