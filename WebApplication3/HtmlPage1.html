@@ -562,7 +562,8 @@
             });
 
             var huizhiSelect = document.getElementById('huizhi');
-            var features = new ol.Collection();
+            //var features = new ol.Collection();
+            var features = source.getFeatures();
 
             var measurePtsArray = new ol.Collection();
 
@@ -571,7 +572,7 @@
                 var value = huizhiSelect.value;
                 if (value !== 'None') {
                     draw = new ol.interaction.Draw({
-                        features: features,
+                        features: source.getFeatures(),
                         source: source,
                         type: /** @type {ol.geom.GeometryType} */ (huizhiSelect.value)
                     });
