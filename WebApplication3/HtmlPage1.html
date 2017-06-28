@@ -370,7 +370,7 @@
             });
 
             //绘制图层
-            var source = new ol.source.Vector({ wrapX: false });
+            var source = ImageData.getSource();
 
             var vector = new ol.layer.
             Vector({
@@ -571,10 +571,26 @@
                 var value = huizhiSelect.value;
                 if (value !== 'None') {
                     draw = new ol.interaction.Draw({
-                        features: features,
+                        features: source.getFeatures(),
                         source: source,
                         type: /** @type {ol.geom.GeometryType} */ (huizhiSelect.value)
                     });
+
+                    //绘制结束
+                    draw.on('drawend', function (e) {
+                        var currentFeature = e.feature;
+                        var coor = currentFeature.getGeometry().getCoordinates();
+                        var lat = coor[0];
+                        var lon = coor[1];
+                        //将添加的点传入数据库
+                        $.ajax({
+                            url: "./AddPoint.ashx?lat=" + lat+"&lon="+lon,
+                            success: function (result) {
+
+                                alert("添加成功");
+                            }
+                        })
+                    })
 
                     map.addInteraction(draw);
                 }
@@ -596,8 +612,9 @@
                 var value = xiugaiSelect.value;
                 if (value !== 'None') {
                     modify = new ol.interaction.Modify({
-                        features: features,
+                        features: source.getFeatures(),
                         source: source,
+                        type: /** @type {ol.geom.GeometryType} */ (xiugaiSelect.value)
                     });
                     map.addInteraction(modify);
                 }
