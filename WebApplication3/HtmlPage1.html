@@ -13,6 +13,7 @@
 
     <script src="./ol.js" type="text/javascript"></script>
     <script src="jquery-3.2.1.js" type="text/javascript"></script>
+    <script src="echarts.js" type="text/javascript"></script>
 
 </head>
 
@@ -138,6 +139,46 @@
         background: linear-gradient(top,#f2f3f7,#e4e8ec);
     }
 
+    #example{
+        position: absolute;
+        right: 150px;
+        top:300px;
+        color: #8c96a0;
+        text-shadow: 1px 1px 1px #fff;
+        border: 1px solid #dce1e6;
+        box-shadow: 0 1px 2px #fff inset,0 -1px 0 #a8abae inset;
+        background: -webkit-linear-gradient(top,#f2f3f7,#e4e8ec);
+        background: -moz-linear-gradient(top,#f2f3f7,#e4e8ec);
+        background: linear-gradient(top,#f2f3f7,#e4e8ec);
+    }  
+
+    #sure{
+        position: absolute;
+        left: 160px;
+        bottom:50px;
+        color: #8c96a0;
+        text-shadow: 1px 1px 1px #fff;
+        border: 1px solid #dce1e6;
+        box-shadow: 0 1px 2px #fff inset,0 -1px 0 #a8abae inset;
+        background: -webkit-linear-gradient(top,#f2f3f7,#e4e8ec);
+        background: -moz-linear-gradient(top,#f2f3f7,#e4e8ec);
+        background: linear-gradient(top,#f2f3f7,#e4e8ec);
+        z-index:-300;
+    } 
+
+    #exportmap{
+        position: absolute;
+        right: 150px;
+        top:350px;
+        color: #8c96a0;
+        text-shadow: 1px 1px 1px #fff;
+        border: 1px solid #dce1e6;
+        box-shadow: 0 1px 2px #fff inset,0 -1px 0 #a8abae inset;
+        background: -webkit-linear-gradient(top,#f2f3f7,#e4e8ec);
+        background: -moz-linear-gradient(top,#f2f3f7,#e4e8ec);
+        background: linear-gradient(top,#f2f3f7,#e4e8ec);
+    }
+
     #huizhi {
         position: absolute;
         right: 900px;
@@ -158,7 +199,7 @@
 
     #tucengkongzhi {
         position: absolute;
-        right: 300px;
+        right: 200px;
         top: 50px;
     }
 
@@ -265,6 +306,57 @@
     #wrap > label:hover {
         background: #000;
     }
+
+    #float {
+        position: fixed;
+        top: 100px;
+        width: 1000px;
+        left: 200px;
+        height: 500px;
+        line-height: 500px;
+        text-align: center;
+        border: 1px solid #000;
+        background-color: #FFF;
+    }
+
+    #cityname{
+        position: absolute;
+        border: 1px solid #ccc;
+        padding: 4px 0px;
+        border-radius: 10px;
+        padding-left: 5px;
+        z-index:-300;
+        bottom:200px;
+        left:100px;
+    }
+
+    #citypinyin{
+        position: absolute;
+        border: 1px solid #ccc;
+        padding: 4px 0px;
+        border-radius: 10px;
+        padding-left: 5px;
+        z-index:-300;
+        bottom:150px;
+        left:100px;
+    }
+
+    #cityclass{
+        position: absolute;        
+        border: 1px solid #ccc;
+        padding: 4px 0px;
+        border-radius: 10px;
+        padding-left: 5px;
+        z-index:-300;
+        bottom:100px;
+        left:100px;
+    }
+
+    #information{
+        background-color:gray;
+        z-index:300;
+    }
+
 </style>
 
 
@@ -277,16 +369,30 @@
         <label id='sideMenuControl' for='sideToggle'>=</label>
     </div>
 
-    <button id="btn1" onclick="btn1_click()">查询</button>
-    <button id="btn2" onclick="moveToTop()">上移</button>
-    <button id="btn3" onclick="moveToBottom()">下移</button>
-    <button id="btn4" onclick="moveToLeft()">左移</button>
-    <button id="btn5" onclick="moveToRight()">右移</button>
-    <button id="btn6" onclick="zoomIn()">放大</button>
-    <button id="btn7" onclick="zoomOut()">缩小</button>
-    <button id="btn8" onclick="measureBtn()">量测</button>
-
-    <div style="right: 1000px; position:absolute; top: 48px;">绘制</div>
+    <div id="mybutton">
+        <button id="btn1" onclick="btn1_click()">查询</button>
+        <button id="btn2" onclick="moveToTop()">上移</button>
+        <button id="btn3" onclick="moveToBottom()">下移</button>
+        <button id="btn4" onclick="moveToLeft()">左移</button>
+        <button id="btn5" onclick="moveToRight()">右移</button>
+        <button id="btn6" onclick="zoomIn()">放大</button>
+        <button id="btn7" onclick="zoomOut()">缩小</button>
+        <button id="btn8" onclick="measureBtn()">量测</button>
+        <button id="example" onclick="query_chart()">统计图表</button>       
+        <button id="exportmap" onclick="exportmap()">导出地图</button>
+    </div>         
+        
+    <div id="information">
+        <div id="tip" style="left: 70px; position:absolute; bottom: 250px;margin:0.67em 0; font-size:0.8em;z-index:-300;color:red;">Please input cityname, citypinyin, cityclass</div>
+        <div>
+            <input id="cityname" />
+            <input id="citypinyin" />
+            <input id="cityclass" />
+        </div>
+        <button id="sure" onclick="inputvar()">确定</button>
+    </div>
+   
+    <div style="right: 1000px; position:absolute; top: 48px;">添加</div>
     <select id="huizhi">
         <option value="None">None</option>
         <option value="Point">Point</option>
@@ -304,14 +410,14 @@
         <option value="Circle">Circle</option>
     </select>
 
-    <div style="right: 600px; position:absolute; top: 48px;">点选</div>
+    <div style="right: 600px; position:absolute; top: 48px;">删除</div>
     <select id="dianxuan" class="form-control">
         <option value="None">None</option>
         <option value="singleclick">Single-click</option>
         <option value="pointermove">Hover</option>
     </select>
    
-    <div style="right: 400px; position:absolute; top: 48px;">图层控制</div>
+    <div style="right: 300px; position:absolute; top: 48px;">图层控制</div>
     <select id="tucengkongzhi">
         <option value="All">全部图层</option>
         <option value="Base">底图</option>
@@ -319,6 +425,14 @@
         <option value="ImageData">居民地数据</option>      
         <option value="Remove">移除数据</option>  
     </select>
+
+    <div id="chart"></div>
+
+    <div id="float" style="display:none">
+
+        <div id="mainchart" style="width:1000px;height:400px;"></div>
+
+    </div>
 
 
     <div style="right: 1050px; position:fixed; bottom:0px; font-size:14px;">Copyright © 2017 LUO Lingwei. All rights reserved.</div>
@@ -370,7 +484,7 @@
             });
 
             //绘制图层
-            var source = new ol.source.Vector({ wrapX: false });
+            var source = ImageData.getSource();
 
             var vector = new ol.layer.
             Vector({
@@ -420,15 +534,42 @@
             //地图显示
             map.getView().fit(bounds, map.getSize());
 
+            //查询
             function btn1_click() {
+                var cityid;
                 var cityname = document.getElementById("txt").value;
                 $.ajax({
                     url: "./x.ashx?cityname=" + cityname,
                     success: function (result) {
-                        var id = result.split(',');
-                        alert("城市id：" + id);
+                        //alert(result);
+                        cityid = result.split(',')[0];
+                        //cityid = cityid[0];
+
+                        var source = ImageData.getSource();
+                        var feature_id = "res2_4m." + cityid;
+                        var feature_pt = source.getFeatureById(feature_id);
+
+                        var x = feature_pt.getCoordinates();
+                        var lon = feature_pt.getCoordinates()[0];
+                        var lat = feature_pt.getCoordinates()[1];
+                        var adclass = feature_pt.getProperties();
+                        alert(lon + "," + lat + "," + adclass)
+
+                        var new_style = new ol.style.Style({
+                            fill: new ol.style.Fill({ color: 'rgba(160,160,160,5)' }),
+                            stroke: new ol.style.Stroke({
+                                color: 'black', width: 5
+                            })
+                        });
+
+                        feature_pt.setStyle(new_style);
+
+
+
                     }
                 })
+                
+
             }
 
 
@@ -553,65 +694,6 @@
                 view.setZoom(view.getZoom() - 0.5);
             }
 
-
-            /*地图的绘制修改*/
-
-            //绘制点、线、区域
-            var raster = new ol.layer.Tile({
-                source: new ol.source.OSM()
-            });
-
-            var huizhiSelect = document.getElementById('huizhi');
-            //var features = new ol.Collection();
-            var features = source.getFeatures();
-
-            var measurePtsArray = new ol.Collection();
-
-            var draw; // global so we can remove it later
-            function addInteraction() {
-                var value = huizhiSelect.value;
-                if (value !== 'None') {
-                    draw = new ol.interaction.Draw({
-                        features: source.getFeatures(),
-                        source: source,
-                        type: /** @type {ol.geom.GeometryType} */ (huizhiSelect.value)
-                    });
-
-                    map.addInteraction(draw);
-                }
-            }
-
-            huizhiSelect.onchange = function () {
-                map.removeInteraction(draw);
-                addInteraction();
-            };
-
-            addInteraction();
-
-
-            //修改
-            var xiugaiSelect = document.getElementById('xiugai');
-
-            var modify; // global so we can remove it later
-            function addInteractionMod() {
-                var value = xiugaiSelect.value;
-                if (value !== 'None') {
-                    modify = new ol.interaction.Modify({
-                        features: features,
-                        source: source,
-                    });
-                    map.addInteraction(modify);
-                }
-            }
-
-            xiugaiSelect.onchange = function () {
-                map.removeInteraction(modify);
-                map.removeInteraction(draw);
-                addInteractionMod();
-            };
-
-            addInteractionMod();
-
             //图层控制
             var tucengkongzhiSelect = document.getElementById('tucengkongzhi');
             tucengkongzhiSelect.onchange = function () {
@@ -623,7 +705,7 @@
                     map.addLayer(ImageData);
                     map.getView().fit(bounds, map.getSize());
                 }
-                else if (value=='BaseMap'){
+                else if (value == 'BaseMap') {
                     removeAllLayers();
                     map.addLayer(BaseMap);
                     map.getView().fit(bounds, map.getSize());
@@ -643,13 +725,117 @@
                 }
             }
 
-            function removeAllLayers() {                                            
+            function removeAllLayers() {
                 for (var i = 0; i < map.getLayers().getLength() ; i++) {
-                    map.removeLayer(map.getLayers()[i]);                  
-                }              
+                    map.removeLayer(map.getLayers()[i]);
+                }
             }
 
-            //点选
+            /*用户操作*/
+
+            //添加点、线、区域
+            var raster = new ol.layer.Tile({
+                source: new ol.source.OSM()
+            });
+
+            var huizhiSelect = document.getElementById('huizhi');
+            //var features = new ol.Collection();
+            var features = source.getFeatures();
+
+            var measurePtsArray = new ol.Collection();
+
+            var featureLat, featureLon;
+
+            var draw; // global so we can remove it later
+            function addInteraction() {
+                var value = huizhiSelect.value;
+                if (value !== 'None') {
+                    draw = new ol.interaction.Draw({
+                        features: source.getFeatures(),
+                        source: source,
+                        type: /** @type {ol.geom.GeometryType} */ (huizhiSelect.value)
+                    });
+
+                    //添加结束
+                    draw.on('drawend', function (e) {
+                        var currentFeature = e.feature;
+                        var coor = currentFeature.getGeometry().getCoordinates();
+                        featureLat = coor[0];
+                        featureLon = coor[1];
+
+                                                                       
+                        //将添加的点传入数据库
+                        alert("请输入添加点信息");
+                        document.getElementById("cityname").style.zIndex = 100;
+                        document.getElementById("citypinyin").style.zIndex = 100;
+                        document.getElementById("cityclass").style.zIndex = 100;                       
+                        document.getElementById("sure").style.zIndex = 100;
+                        document.getElementById("tip").style.zIndex = 100;
+                        
+
+                       
+                    })
+
+                    map.addInteraction(draw);
+                }
+            }
+
+            function inputvar() {
+                var cityname = document.getElementById("cityname").value;
+                var citypinyin = document.getElementById("citypinyin").value;
+                var cityclass = document.getElementById("cityclass").value;
+
+                inputvarClick(featureLat, featureLon,cityname,citypinyin,cityclass);
+            }
+
+            function inputvarClick(lat,lon,cityname,citypinyin,cityclass) {
+                $.ajax({
+                    url: "./AddPoint.ashx?lat=" + lat + "&lon=" + lon+"&cityname="+cityname+"&citypinyin="+citypinyin+"&cityclass="+cityclass,
+                    success: function (result) {
+                        document.getElementById("cityname").style.zIndex = -300;
+                        document.getElementById("citypinyin").style.zIndex = -300;
+                        document.getElementById("cityclass").style.zIndex = -300;                      
+                        document.getElementById("sure").style.zIndex = -300;
+                        document.getElementById("tip").style.zIndex = -300;
+                        alert("添加成功");
+                    }
+                })
+            }
+
+            huizhiSelect.onchange = function () {
+                map.removeInteraction(draw);
+                addInteraction();
+            };
+
+            addInteraction();
+
+
+            //修改
+            var xiugaiSelect = document.getElementById('xiugai');
+
+            var modify; // global so we can remove it later
+            function addInteractionMod() {
+                var value = xiugaiSelect.value;
+                if (value !== 'None') {
+                    modify = new ol.interaction.Modify({
+                        features: source.getFeatures(),
+                        source: source,
+                        type: /** @type {ol.geom.GeometryType} */ (xiugaiSelect.value)
+                    });
+                    map.addInteraction(modify);
+                }
+            }
+
+            xiugaiSelect.onchange = function () {
+                map.removeInteraction(modify);
+                map.removeInteraction(draw);
+                addInteractionMod();
+            };
+
+            addInteractionMod();
+          
+
+            //删除
             var dianxuanSelect = document.getElementById('dianxuan');
             var select = null;
             function addInteractionSel() {
@@ -660,8 +846,21 @@
                     select.on('select', function (e) {
                         var features = e.target.getFeatures();
                         var feature = features.pop();
-                        alert(feature.getId());
-                        alert(feature.getGeometry());
+                        var ptId = feature.getId();
+                        ptId = ptId.split('.')[1];
+                        alert(ptId);
+                        $.ajax({
+                            url: "./DeletePoint.ashx?id=" + ptId,
+                            success: function (result) {
+                                alert("删除成功");
+                                
+                            }
+
+                        })
+
+                        window.location.reload();
+
+                 
                         var geo = feature.getGeometry();
                         var coor = geo.getCoordinates();
                         var latitude = coor[0];
@@ -685,7 +884,7 @@
             };
 
             addInteractionSel();
-
+           
 
             //量测
             var measureFeature;
@@ -709,6 +908,7 @@
             })
 
             var judgeMeasure = false;
+
             //点击距离量算按钮后,添加距离量算的交互,删除其他的交互
             function measureBtn() {
                 if (!judgeMeasure) {
@@ -722,7 +922,7 @@
             }
 
             //导出地图
-            $("#exportMap").click(function () {
+            function exportmap() {
                 map.once('postcompose', function (event) {
                     var canvas = event.context.canvas;
                     canvas.toBlob(function (blob) {
@@ -730,8 +930,71 @@
                     });
                 });
                 map.renderSync();
-            });
+            };
 
+
+            //打开浮动界面
+            function query_chart() {
+                if (document.getElementById("float").style.display == "none") {
+                    document.getElementById("float").style.display = "";
+                    //画图
+                    draw_chart();
+                }
+
+                else {
+                    document.getElementById("float").style.display = "none";
+                }
+            }
+
+            //绘制图表
+            function draw_chart() {
+
+                var classArray = [];//class数组
+                var countArray = [];//个数数组
+                $.ajax({
+                    url: "./DrawChart.ashx",
+                    success: function (result) {
+                        //读取数据
+                        var all_data = result.split('\n');
+                        for (var i = 0; i < all_data.length - 1; i++) {
+                            var class_value = all_data[i].split(',')[0];
+                            var count_value = all_data[i].split(',')[1];
+                            classArray.push(class_value);
+                            countArray.push(count_value);
+                        }
+                        drawChart(classArray, countArray);
+                    }
+                })
+            }
+           
+
+            function drawChart(array1,array2) {
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('mainchart'));
+                // 指定图表的配置项和数据
+                var option = {
+                    //title: {
+                    //    text: title_text
+                    //},
+                    tooltip: {},
+                    legend: {
+                        data: ['个数']
+                    },
+
+                    xAxis: {
+                        data: array1
+                    },
+
+                    yAxis: {},
+                    series: [{
+                        name: '个数',
+                        type: 'bar',
+                        data: array2 //[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2000, 3000] //distanceArray,
+                    }]
+                };
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+            }
 
         </script>
     </div>

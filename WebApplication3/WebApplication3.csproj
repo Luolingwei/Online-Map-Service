@@ -98,6 +98,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="echarts.js" />
     <Content Include="Login.html" />
     <Content Include="ol.css" />
     <Content Include="packages.config" />
@@ -105,6 +106,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="登录背景.jpg" />
+    <Content Include="AddPoint.ashx" />
+    <Content Include="DeletePoint.ashx" />
+    <Content Include="DrawChart.ashx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -122,6 +126,15 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddPoint.ashx.cs">
+      <DependentUpon>AddPoint.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="DeletePoint.ashx.cs">
+      <DependentUpon>DeletePoint.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="DrawChart.ashx.cs">
+      <DependentUpon>DrawChart.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="x.ashx.cs">
       <DependentUpon>x.ashx</DependentUpon>
