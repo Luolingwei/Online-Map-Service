@@ -17,16 +17,15 @@ namespace WebApplication3
             context.Response.ContentType = "text/plain";
             string result = "";
             result = ModifyPts(context, result);
-            context.Response.Write("Hello World");
+            context.Response.Write(result);
         }
 
         virtual protected string ModifyPts(HttpContext context, string result)
         {
-            string lat = context.Request.QueryString["lat"];
-            string lon = context.Request.QueryString["lon"];
             string cityname = context.Request.QueryString["cityname"];
             string citypinyin = context.Request.QueryString["citypinyin"];
             string cityclass = context.Request.QueryString["cityclass"];
+            string city_first = context.Request.QueryString["city_first"];
 
             //建立数据库连接
             NpgsqlConnection connection = new NpgsqlConnection("Server = localhost;Port = 5432;UserId = postgres;" +
@@ -35,8 +34,7 @@ namespace WebApplication3
             connection.Open();
 
             //构建SQL语句进行查询
-
-            string sqlCommand = string.Format("INSERT INTO res2_4m(geom,name,pinyin,adclass) VALUES(ST_GeomFromText('POINT({0} {1})',4326),'{2}','{3}',{4});", lat, lon, cityname, citypinyin, cityclass);
+            string sqlCommand = string.Format("UPDATE res2_4m SET name='{0}',pinyin='{1}',adclass='{2}' WHERE name='{3}';", cityname, citypinyin, cityclass,city_first);
             //delete where id=
             NpgsqlCommand command = new NpgsqlCommand(sqlCommand, connection);
             command.ExecuteNonQuery();

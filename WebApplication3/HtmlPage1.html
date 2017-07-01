@@ -405,7 +405,7 @@
             <input id="cityclass" />
         </div>
         <button id="sure" onclick="inputvar()">确定</button>
-        <button id="modifysure" onclick="">修改</button>
+        <button id="modifysure" onclick="xiugaiClick()">修改</button>
     </div>
    
     <div style="right: 1000px; position:absolute; top: 48px;">添加</div>
@@ -517,6 +517,24 @@
                 axisOrientation: 'neu'
             });
 
+            var iconFeature = new ol.Feature({
+                geometry: new ol.geom.Point([116, 30]),
+                name: 'Null Island',
+                population: 4000,
+                rainfall: 500
+            });
+
+            var iconStyle = new ol.style.Style({
+                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */({
+                    anchor: [0.5, 46],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'pixels',
+                    src: 'https://openlayers.org/en/v4.2.0/examples/data/icon.png'
+                }))
+            });
+
+
+
 
             //设置地图
             var map = new ol.Map({
@@ -550,6 +568,11 @@
             //地图显示
             map.getView().fit(bounds, map.getSize());
 
+
+
+
+
+
             //查询
             function btn1_click() {
                 var cityid;
@@ -564,6 +587,14 @@
                         var source = ImageData.getSource();
                         var feature_id = "res2_4m." + cityid;
                         var feature_pt = source.getFeatureById(feature_id);
+                        feature_pt.setStyle(new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 8,
+                                fill: new ol.style.Fill({
+                                    color: 'red'
+                                })
+                            })
+                        }));
 
                         var lon = feature_pt.getGeometry().getCoordinates()[0];
                         var lat = feature_pt.getGeometry().getCoordinates()[1];
@@ -571,15 +602,7 @@
                         var adclass_2 = adclass_1.adclass;
                         var cityname=adclass_1.name;
                         alert("名称：" + cityname + "\n" + "经度：" + lon + "\n" + "纬度：" + lat + "\n" + "等级：" + adclass_2);
-
-                        var new_style = new ol.style.Style({
-                            fill: new ol.style.Fill({ color: 'rgba(160,160,160,5)' }),
-                            stroke: new ol.style.Stroke({
-                                color: 'black', width: 5
-                            })
-                        });
-
-                        feature_pt.setStyle(new_style);
+                       
                     }
                 })             
 
@@ -798,6 +821,7 @@
                 inputvarClick(featureLat, featureLon,cityname,citypinyin,cityclass);
             }
 
+            //添加点
             function inputvarClick(lat,lon,cityname,citypinyin,cityclass) {
                 $.ajax({
                     url: "./AddPoint.ashx?lat=" + lat + "&lon=" + lon+"&cityname="+cityname+"&citypinyin="+citypinyin+"&cityclass="+cityclass,
@@ -823,6 +847,7 @@
             //修改
             var xiugaiSelect = document.getElementById('xiugai');
             var selectXiugai = null;
+            var cityname_first = null;
             function addInteractionXiu() {
                 value = xiugaiSelect.value;
                 if (value !== 'None') {
@@ -837,7 +862,7 @@
                         var cityclass = adclass_1.adclass;
                         var cityname = adclass_1.name;
                         var citypinyin = adclass_1.pinyin;
-                        
+                        cityname_first = cityname;
 
                         document.getElementById("cityname").style.zIndex = 100;
                         document.getElementById("citypinyin").style.zIndex = 100;
@@ -848,15 +873,6 @@
                         document.getElementById("cityname").value = cityname;
                         document.getElementById("cityclass").value = cityclass;
                         document.getElementById("citypinyin").value = citypinyin;
-
-                        //$.ajax({
-                        //    url: "./ModifyPoint.ashx?id=" + ptId,
-                        //    success: function (result) {
-                                
-
-                        //    }
-
-                        //})
                     });
                     map.addInteraction(selectXiugai);
                 }
@@ -867,6 +883,25 @@
                 map.removeInteraction(draw);
                 addInteractionXiu();
             };
+
+            //点击修改
+            function xiugaiClick() {
+                var cityname = document.getElementById("cityname").value;
+                var citypinyin = document.getElementById("citypinyin").value;
+                var cityclass = document.getElementById("cityclass").value;
+                $.ajax({
+                    url: "./ModifyPoint.ashx?cityname=" + cityname + "&citypinyin=" + citypinyin + "&cityclass=" + cityclass+"&city_first="+cityname_first,
+                    success: function (result) {
+                        document.getElementById("cityname").style.zIndex = -300;
+                        document.getElementById("citypinyin").style.zIndex = -300;
+                        document.getElementById("cityclass").style.zIndex = -300;
+                        document.getElementById("modifysure").style.zIndex = -300;
+                        document.getElementById("tip").style.zIndex = -300;
+                        cityname_first = null;
+                        alert("修改成功");
+                    }
+                })
+            }
 
             addInteractionXiu();
 
@@ -886,12 +921,10 @@
                         ptId = ptId.split('.')[1];                       
                         $.ajax({
                             url: "./DeletePoint.ashx?id=" + ptId,
-                            success: function (result) {
-                                alert("删除成功");
-                                
+                            success: function (result) {  
                             }
-
                         })
+                        alert("删除成功");
 
                         window.location.reload();
 
