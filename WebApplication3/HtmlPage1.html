@@ -434,11 +434,11 @@
     </select>
    
     <div style="right: 300px; position:absolute; top: 48px;">图层控制</div>
-    <select id="tucengkongzhi">
+    <select id="tucengkongzhi" onchange="onchange_llw()">
         <option value="All">全部图层</option>
-        <option value="Base">底图</option>
-        <option value="ImageMap">居民地地图</option>
-        <option value="ImageData">居民地数据</option>      
+        <option value="BaseMap">底图</option>
+        <option value="ImageMap">数据地图</option>
+        <option value="ImageData">符号地图</option>      
         <option value="Remove">移除数据</option>  
     </select>
 
@@ -534,8 +534,6 @@
             });
 
 
-
-
             //设置地图
             var map = new ol.Map({
                 //地图中的比例尺等控制要素
@@ -552,7 +550,7 @@
                 layers: [
                     //添加图层
                    BaseMap,
-                   //ImageMap,
+                   ImageMap,
                    vector,
                    ImageData,
                 ],
@@ -587,6 +585,7 @@
                         var source = ImageData.getSource();
                         var feature_id = "res2_4m." + cityid;
                         var feature_pt = source.getFeatureById(feature_id);
+
                         feature_pt.setStyle(new ol.style.Style({
                             image: new ol.style.Circle({
                                 radius: 8,
@@ -602,7 +601,7 @@
                         var adclass_2 = adclass_1.adclass;
                         var cityname=adclass_1.name;
                         alert("名称：" + cityname + "\n" + "经度：" + lon + "\n" + "纬度：" + lat + "\n" + "等级：" + adclass_2);
-                       
+
                     }
                 })             
 
@@ -731,7 +730,7 @@
 
             //图层控制
             var tucengkongzhiSelect = document.getElementById('tucengkongzhi');
-            tucengkongzhiSelect.onchange = function () {
+            /*tucengkongzhiSelect.onchange = */function onchange_llw() {
                 var value = tucengkongzhiSelect.value;
                 if (value == 'All') {
                     removeAllLayers();
@@ -747,11 +746,13 @@
                 }
                 else if (value == 'ImageMap') {
                     removeAllLayers();
+                    map.addLayer(BaseMap);
                     map.addLayer(ImageMap);
                     map.getView().fit(bounds, map.getSize());
                 }
                 else if (value == 'ImageData') {
                     removeAllLayers();
+                    map.addLayer(BaseMap);
                     map.addLayer(ImageData);
                     map.getView().fit(bounds, map.getSize());
                 }
@@ -759,10 +760,12 @@
                     removeAllLayers();
                 }
             }
-
+            
             function removeAllLayers() {
                 for (var i = 0; i < map.getLayers().getLength() ; i++) {
-                    map.removeLayer(map.getLayers()[i]);
+                    var tiaoshi1 = map.getLayers();
+                    var tiaoshi2 = tiaoshi1.a[i];
+                    map.removeLayer(tiaoshi2);
                 }
             }
 
