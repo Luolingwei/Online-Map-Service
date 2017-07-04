@@ -7,7 +7,7 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>OpenLayers</title>
+    <title>WebGIS_LUO Lingwei</title>
 
     <link rel="stylesheet" href="./ol.css" type="text/css" />    
     <link rel="stylesheet" href="https://openlayers.org/en/v4.2.0/css/ol.css" type="text/css" />
@@ -987,25 +987,93 @@
                 myChart.setOption(option);
             }
 
+
             //拖文件上传
+
             var box = document.getElementById("map") //拖拽区域为map
             box.addEventListener("drop", function (e) {
                 e.preventDefault();
                 var fileList = e.dataTransfer.files;//获取文件对象
                 //检测是否拖拽文件到页面的操作
-                if (fileList.length == 0) {
+                if (fileList.length == 0) {                   
                     return false;
                 }
                 //reader读取文件内容
                 var reader = new FileReader();
-                reader.readAsText(fileList[0]);
-                reader.onload() = function (f) {
-                    resultToJson(this.result)
+                reader.readAsText(fileList[0]);                         
+                reader.onload = function (f) {                    
+                    resultToJson(this.result);
                 }
             }, false);
 
-            function resultToJson(str) {
-                return JSON.parse(str);
+            $(document).on({
+                dragleave: function (e) {
+                    e.preventDefault();
+                },
+                drop: function (e) {
+                    e.preventDefault();
+                },
+                dragenter: function (e) {
+                    e.preventDefault();
+                },
+                dragover: function (e) {
+                    e.preventDefault();
+                },
+            });
+
+            //拖入图层
+            var vectorSource;
+            var dragLayer; 
+
+            function resultToJson(r) {
+                var readArray = new Array();
+                readArray = r.split('\n');
+                var features_data = new Array();
+
+                for (var i = 1; i < readArray.length - 1; i++) {
+                    var data = {
+                        "type": "Point", "coordinates": []
+                    };
+
+                    readArray[i].replace('\r', "");
+                    var coor_array = readArray[i].split(",");
+                    var coor = [];
+                    coor[0] = parseFloat(coor_array[1]);
+                    coor[1] = parseFloat(coor_array[0]);
+                    data["coordinates"] = coor;                  
+                    
+                    var feature = new ol.Feature({
+                        geometry: new ol.geom.Point(coor),
+                        projection: 'EPSG:4326',
+                    })
+                    features_data.push(feature);
+                    console.log(JSON.stringify(data));                             
+                    
+                }
+
+                //在下面新建图层               
+                vectorSource = new ol.source.Vector({
+                    features: features_data
+                });
+                dragLayer = new ol.layer.Vector({
+                    source: vectorSource,
+                    style: new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: 'red',
+                            size: 1
+                        }),
+                        fill: new ol.style.Fill({
+                            color: 'rgba(255,255,255,0.2)'
+                        }),
+                        image: new ol.style.Circle({
+                            radius: 7,
+                            fill: new ol.style.Fill({
+                                color: '#ffcc33'
+                            })
+                        })
+                    })
+                });
+                map.addLayer(dragLayer);                
             }
 
             
