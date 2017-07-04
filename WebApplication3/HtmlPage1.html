@@ -36,6 +36,19 @@
         padding-left: 5px;
     }
 
+    #inquire {
+        position: absolute;
+        left: 310px;
+        top:52px;
+        color: #8c96a0;
+        text-shadow: 1px 1px 1px #fff;
+        border: 1px solid #dce1e6;
+        box-shadow: 0 1px 2px #fff inset,0 -1px 0 #a8abae inset;
+        background: -webkit-linear-gradient(top,#f2f3f7,#e4e8ec);
+        background: -moz-linear-gradient(top,#f2f3f7,#e4e8ec);
+        background: linear-gradient(top,#f2f3f7,#e4e8ec);       
+    }
+
     #sure{
         position: absolute;
         left: 160px;
@@ -272,7 +285,6 @@
 
 </style>
 
-
 <body>
     
     <input type='checkbox' id='sideToggle' />
@@ -305,7 +317,9 @@
         <button id="sure" onclick="inputvar()">确定</button>
         <button id="modifysure" onclick="xiugaiClick()">修改</button>
     </div>
-   
+
+    <button id="inquire" onclick="btn1_click()">查询</button>
+ 
     <div style="right: 1000px; position:absolute; top: 48px;">添加</div>
     <select id="huizhi">
         <option value="None">None</option>
