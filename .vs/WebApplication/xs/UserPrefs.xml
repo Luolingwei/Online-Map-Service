@@ -1,0 +1,28 @@
+﻿<Properties StartupConfiguration="{E646A6B9-1AE3-4AD7-8FD6-4B57E9C97404}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="WebApplication/HtmlPage1.html">
+    <Files>
+      <File FileName="WebApplication/DeletePoint.ashx.cs" Line="32" Column="1" />
+      <File FileName="WebApplication/HtmlPage1.html" Line="402" Column="20" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="WebApplication" expanded="True">
+            <Node name="WebApplication" expanded="True">
+              <Node name="DeletePoint.ashx" expanded="True" />
+              <Node name="DrawChart.ashx" expanded="True" />
+              <Node name="HtmlPage1.html" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.WebApplication PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

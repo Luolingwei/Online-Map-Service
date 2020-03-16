@@ -1,0 +1,23 @@
+﻿<Properties StartupConfiguration="{E646A6B9-1AE3-4AD7-8FD6-4B57E9C97404}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="WebApplication3/HtmlPage1.html">
+    <Files>
+      <File FileName="WebApplication3/HtmlPage1.html" Line="25" Column="22" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="WebApplication3" expanded="True" selected="True">
+            <Node name="WebApplication" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.WebApplication PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
